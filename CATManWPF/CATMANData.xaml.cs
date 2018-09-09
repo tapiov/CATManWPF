@@ -23,15 +23,15 @@ namespace CATMANWPF
     /// <summary>
     /// Interaction logic for CATMANData.xaml
     /// </summary>
-    public partial class CATMANDataPage : Page
+    public partial class CATMANData : Page
     {
-        public CATMANDataPage()
+        public CATMANData()
         {
             InitializeComponent();
         }
 
         // Custom constructor to pass expense report data
-        public CATMANDataPage(object data) : this()
+        public CATMANData(object data) : this()
         {
             // Bind to expense report data.
             this.DataContext = data;

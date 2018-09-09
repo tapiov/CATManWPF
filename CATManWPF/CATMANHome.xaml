@@ -17,6 +17,7 @@
                 <Setter Property="FontWeight" Value="DemiBold" />
                 <Setter Property="Margin" Value="4" />
             </Style>
+
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
@@ -50,29 +51,92 @@
             </StackPanel>
         </materialDesign:ColorZone>
 
-
         <Border Background="{DynamicResource PrimaryHueDarkBrush}"
             Grid.Row="1" Grid.Column="0">
-            <TextBox Grid.Column="0" Grid.Row="1"  Margin="10,0,10,10" Foreground="LightGray" Text="Select Port to Connect"/>
-        </Border>
+            <TextBox Grid.Column="0" Grid.Row="1"  Margin="10,0,10,10" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" Text="Select Port to Connect"/>
+         </Border>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="10,0,10,10" Width="400" Height="80">
-            <ListBox Name="connectDevices" materialDesign:ListBoxAssist.IsToggle="True" 
-                     ScrollViewer.VerticalScrollBarVisibility="Visible" 
-                     ItemsSource="{Binding Source={StaticResource DeviceListSource}}" Width="400" Height="80" Background="Gray">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Id}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="3" Grid.Column="0" Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" >
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="10,0,10,10" Width="400" Height="80">
+            <ListBox x:Name="DeviceListSource"
+                     Width="400" Height="80" IsSynchronizedWithCurrentItem="True" Cursor="None" 
+                     Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" Background="{DynamicResource PrimaryHueLightBrush}" 
+                     d:DataContext="{d:DesignInstance {x:Type local:CATManHome}}" DataContext="{Binding ItemsSource, ElementName=DeviceListSource}">
+
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                            Padding="{TemplateBinding Control.Padding}"
+                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                            Background="{TemplateBinding Panel.Background}"
+                                            Name="Bd"
+                                            SnapsToDevicePixels="True">
+                                            <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
+                                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                            HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                    <Condition Property="Selector.IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Panel.Background" TargetName="Bd" Value="Transparent"/>
+                                                <Setter Property="Border.BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryHueMidBrush}"/>
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                    <Condition Property="Selector.IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Panel.Background" TargetName="Bd" Value="Transparent"/>
+                                                <Setter Property="Border.BorderBrush" TargetName="Bd" Value="{StaticResource PrimaryHueDarkBrush}"/>
+                                            </MultiTrigger>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Panel.Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}"/>
+                                                <Setter Property="Border.BorderBrush" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <SolidColorBrush>#A826A0DA</SolidColorBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="UIElement.IsEnabled" Value="False">
+                                                <Setter Property="TextElement.Foreground" TargetName="Bd">
+                                                    <Setter.Value>
+                                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Vertical" Margin="10,0,10,0" Height="84" Width="150">
+            <Button Name="connectButton" Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Connect" Click="connectButton_Click" Width="100" 
+                    Background="{DynamicResource PrimaryHueLightBrush}" BorderBrush="{DynamicResource PrimaryHueLightBrush}" 
+                    OpacityMask="Black" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+            <Button Name="disconnectButton" Margin="10,20,10,0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Disconnect" Click="disconnectButton_Click" Width="100" 
+                    Background="{DynamicResource PrimaryHueLightBrush}" BorderBrush="{DynamicResource PrimaryHueLightBrush}"
+                    OpacityMask="Black" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Vertical" Margin="10,0,10,0" Height="84" Width="300">
-            <Button Name="connectButton" Margin="10,0,10,0" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Connect" Click="connectButton_Click" Width="100"/>
-            <Button Name="disconnectButton" Margin="10,20,10,0" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Disconnect" Click="disconnectButton_Click" Width="100"/>
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,10,0" Width="400" Height="40">
+            <TextBox
+                x:Name="status" TextWrapping="Wrap" IsReadOnly="True" Width="400" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="Black"/>
         </StackPanel>
-
 
     </Grid>
 </Page>
